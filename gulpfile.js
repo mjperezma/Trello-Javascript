@@ -19,12 +19,10 @@ const uglify = require('gulp-uglify-es').default;
 gulp.task('clean', del.bind(null, ['public']));
 
 // >> Process HTML files
-gulp.task('html', function(done) {
+gulp.task('html', function (done) {
   gulp
     .src(config.html.src)
-    .pipe(
-      plumber({ errorHandler: notify.onError('Error: <%= error.message %>') })
-    )
+    .pipe(plumber({ errorHandler: notify.onError('Error: <%= error.message %>') }))
     .pipe(
       htmlPartial({
         basePath: config.html.partials
@@ -35,13 +33,11 @@ gulp.task('html', function(done) {
 });
 
 // >> Process SCSS files (extended + sourcemaps +  autoprefixer)
-gulp.task('styles', function(done) {
+gulp.task('styles', function (done) {
   gulp
     .src(config.scss.src)
     .pipe(sourcemaps.init())
-    .pipe(
-      plumber({ errorHandler: notify.onError('Error: <%= error.message %>') })
-    )
+    .pipe(plumber({ errorHandler: notify.onError('Error: <%= error.message %>') }))
     .pipe(
       sass({
         outputStyle: 'extended'
@@ -65,14 +61,12 @@ gulp.task('styles', function(done) {
 });
 
 // >> Concatenate JS files with sourcemaps
-gulp.task('scripts', function(done) {
+gulp.task('scripts', function (done) {
   gulp
     .src(config.js.src)
     .pipe(sourcemaps.init())
-    .pipe(
-      plumber({ errorHandler: notify.onError('Error: <%= error.message %>') })
-    )
-    .pipe(concat('main.js'))
+    .pipe(plumber({ errorHandler: notify.onError('Error: <%= error.message %>') }))
+    // .pipe(concat('main.js'))
     .pipe(sourcemaps.write('./'))
     .pipe(gulp.dest(config.js.dest))
     .pipe(browserSync.reload({ stream: true }));
@@ -80,29 +74,25 @@ gulp.task('scripts', function(done) {
 });
 
 // >> Copy image files
-gulp.task('images', function(done) {
+gulp.task('images', function (done) {
   gulp
     .src(config.images.src)
-    .pipe(
-      plumber({ errorHandler: notify.onError('Error: <%= error.message %>') })
-    )
+    .pipe(plumber({ errorHandler: notify.onError('Error: <%= error.message %>') }))
     .pipe(gulp.dest(config.images.dest));
   done();
 });
 
 // >> Copy api files
-gulp.task('api', function(done) {
+gulp.task('api', function (done) {
   gulp.src(config.api.src).pipe(gulp.dest(config.api.dest));
   done();
 });
 
 // >> Copy icon files
-gulp.task('icons', function(done) {
+gulp.task('icons', function (done) {
   gulp
     .src(config.icons.src)
-    .pipe(
-      plumber({ errorHandler: notify.onError('Error: <%= error.message %>') })
-    )
+    .pipe(plumber({ errorHandler: notify.onError('Error: <%= error.message %>') }))
     .pipe(gulp.dest(config.icons.dest));
   done();
 });
@@ -112,12 +102,10 @@ gulp.task('icons', function(done) {
 gulp.task('clean-dist', del.bind(null, ['docs']));
 
 // >> Process HTML files
-gulp.task('html-dist', function(done) {
+gulp.task('html-dist', function (done) {
   gulp
     .src(config.html.src)
-    .pipe(
-      plumber({ errorHandler: notify.onError('Error: <%= error.message %>') })
-    )
+    .pipe(plumber({ errorHandler: notify.onError('Error: <%= error.message %>') }))
     .pipe(
       htmlPartial({
         basePath: config.html.partials
@@ -128,12 +116,10 @@ gulp.task('html-dist', function(done) {
 });
 
 // >> Process SCSS files (compressed + autoprefixer)
-gulp.task('styles-dist', function(done) {
+gulp.task('styles-dist', function (done) {
   gulp
     .src(config.scss.src)
-    .pipe(
-      plumber({ errorHandler: notify.onError('Error: <%= error.message %>') })
-    )
+    .pipe(plumber({ errorHandler: notify.onError('Error: <%= error.message %>') }))
     .pipe(
       sass({
         outputStyle: 'compressed'
@@ -155,12 +141,10 @@ gulp.task('styles-dist', function(done) {
 });
 
 // >> Concatenate and minify JS files w/o sourcemaps
-gulp.task('scripts-dist', function(done) {
+gulp.task('scripts-dist', function (done) {
   gulp
     .src(config.js.src)
-    .pipe(
-      plumber({ errorHandler: notify.onError('Error: <%= error.message %>') })
-    )
+    .pipe(plumber({ errorHandler: notify.onError('Error: <%= error.message %>') }))
     .pipe(concat('main.js'))
     .pipe(uglify())
     .pipe(gulp.dest(config.js.dist));
@@ -168,29 +152,25 @@ gulp.task('scripts-dist', function(done) {
 });
 
 // >> Copy image files
-gulp.task('api-dist', function(done) {
+gulp.task('api-dist', function (done) {
   gulp.src(config.api.src).pipe(gulp.dest(config.api.dist));
   done();
 });
 
 // >> Copy image files
-gulp.task('images-dist', function(done) {
+gulp.task('images-dist', function (done) {
   gulp
     .src(config.images.src)
-    .pipe(
-      plumber({ errorHandler: notify.onError('Error: <%= error.message %>') })
-    )
+    .pipe(plumber({ errorHandler: notify.onError('Error: <%= error.message %>') }))
     .pipe(gulp.dest(config.images.dist));
   done();
 });
 
 // >> Copy icon files
-gulp.task('icons-dist', function(done) {
+gulp.task('icons-dist', function (done) {
   gulp
     .src(config.icons.src)
-    .pipe(
-      plumber({ errorHandler: notify.onError('Error: <%= error.message %>') })
-    )
+    .pipe(plumber({ errorHandler: notify.onError('Error: <%= error.message %>') }))
     .pipe(gulp.dest(config.icons.dist));
   done();
 });
@@ -198,23 +178,20 @@ gulp.task('icons-dist', function(done) {
 // > Watchers + BrowserSync server
 gulp.task(
   'default',
-  gulp.series(
-    ['clean', 'html', 'styles', 'scripts', 'images', 'api', 'icons'],
-    function(done) {
-      browserSync.init({
-        server: {
-          baseDir: './public/'
-        }
-      });
-      gulp.watch(config.watch.html, gulp.series(['html', 'bs-reload']));
-      gulp.watch(config.images.src, gulp.series(['images', 'bs-reload']));
-      gulp.watch(config.api.src, gulp.series(['api', 'bs-reload']));
-      gulp.watch(config.icons.src, gulp.series(['icons', 'bs-reload']));
-      gulp.watch(config.scss.src, gulp.series('styles'));
-      gulp.watch(config.js.src, gulp.series(['scripts', 'bs-reload']));
-      done();
-    }
-  )
+  gulp.series(['clean', 'html', 'styles', 'scripts', 'images', 'api', 'icons'], function (done) {
+    browserSync.init({
+      server: {
+        baseDir: './public/'
+      }
+    });
+    gulp.watch(config.watch.html, gulp.series(['html', 'bs-reload']));
+    gulp.watch(config.images.src, gulp.series(['images', 'bs-reload']));
+    gulp.watch(config.api.src, gulp.series(['api', 'bs-reload']));
+    gulp.watch(config.icons.src, gulp.series(['icons', 'bs-reload']));
+    gulp.watch(config.scss.src, gulp.series('styles'));
+    gulp.watch(config.js.src, gulp.series(['scripts', 'bs-reload']));
+    done();
+  })
 );
 
 // > Build a production-ready version of your proyect
@@ -230,7 +207,7 @@ gulp.task(
       'api-dist',
       'icons-dist'
     ],
-    function(done) {
+    function (done) {
       // eslint-disable-next-line no-console
       console.log('🦄 Build OK!');
       done();
@@ -239,7 +216,7 @@ gulp.task(
 );
 
 // > Recarga las ventanas del navegador
-gulp.task('bs-reload', function(done) {
+gulp.task('bs-reload', function (done) {
   browserSync.reload();
   done();
 });

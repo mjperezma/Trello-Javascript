@@ -38,7 +38,7 @@
 .bs-popover-top {
   margin-bottom: $popover-arrow-height;
 
-  >.arrow {
+  > .arrow {
     bottom: subtract(-$popover-arrow-height, $popover-border-width);
 
     &::before {
@@ -58,7 +58,7 @@
 .bs-popover-right {
   margin-left: $popover-arrow-height;
 
-  >.arrow {
+  > .arrow {
     left: subtract(-$popover-arrow-height, $popover-border-width);
     width: $popover-arrow-height;
     height: $popover-arrow-width;
@@ -81,7 +81,7 @@
 .bs-popover-bottom {
   margin-top: $popover-arrow-height;
 
-  >.arrow {
+  > .arrow {
     top: subtract(-$popover-arrow-height, $popover-border-width);
 
     &::before {
@@ -113,7 +113,7 @@
 .bs-popover-left {
   margin-right: $popover-arrow-height;
 
-  >.arrow {
+  > .arrow {
     right: subtract(-$popover-arrow-height, $popover-border-width);
     width: $popover-arrow-height;
     height: $popover-arrow-width;
@@ -137,15 +137,12 @@
   &[x-placement^="top"] {
     @extend .bs-popover-top;
   }
-
   &[x-placement^="right"] {
     @extend .bs-popover-right;
   }
-
   &[x-placement^="bottom"] {
     @extend .bs-popover-bottom;
   }
-
   &[x-placement^="left"] {
     @extend .bs-popover-left;
   }

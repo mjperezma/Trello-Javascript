@@ -2,17 +2,17 @@
 
 // edit
 
-const toggleEdit = (ev) => {
+const toggleEdit = ev => {
   ev.stopPropagation();
   document.querySelector('.js-edit').classList.toggle('show');
   document.querySelector('.js-edit').classList.remove('d-none');
 };
 
-document.querySelectorAll('.js-card, .js-edit-close').forEach((card) => {
+document.querySelectorAll('.js-card, .js-edit-close').forEach(card => {
   card.addEventListener('click', toggleEdit);
 });
 
-const preventEditClosing = (ev) => {
+const preventEditClosing = ev => {
   ev.stopPropagation();
 };
 

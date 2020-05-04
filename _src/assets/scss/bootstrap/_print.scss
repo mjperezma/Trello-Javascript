@@ -10,7 +10,6 @@
 
 @if $enable-print-styles {
   @media print {
-
     *,
     *::before,
     *::after {
@@ -33,7 +32,7 @@
     //}
 
     abbr[title]::after {
-      content: " ("attr(title) ")";
+      content: " (" attr(title) ")";
     }
 
     // Bootstrap specific; comment the following selector out
@@ -50,7 +49,6 @@
     pre {
       white-space: pre-wrap !important;
     }
-
     pre,
     blockquote {
       border: $border-width solid $gray-500; // Bootstrap custom code; using `$border-width` instead of 1px
@@ -91,11 +89,9 @@
     @page {
       size: $print-page-size;
     }
-
     body {
       min-width: $print-body-min-width !important;
     }
-
     .container {
       min-width: $print-body-min-width !important;
     }
@@ -104,7 +100,6 @@
     .navbar {
       display: none;
     }
-
     .badge {
       border: $border-width solid $black;
     }
@@ -119,7 +114,6 @@
     }
 
     .table-bordered {
-
       th,
       td {
         border: 1px solid $gray-300 !important;
@@ -132,7 +126,7 @@
       th,
       td,
       thead th,
-      tbody+tbody {
+      tbody + tbody {
         border-color: $table-border-color;
       }
     }

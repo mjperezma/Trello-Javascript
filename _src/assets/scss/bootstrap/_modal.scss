@@ -45,7 +45,6 @@
     @include transition($modal-transition);
     transform: $modal-fade-transform;
   }
-
   .modal.show & {
     transform: $modal-show-transform;
   }
@@ -132,13 +131,8 @@
   background-color: $modal-backdrop-bg;
 
   // Fade for backdrop
-  &.fade {
-    opacity: 0;
-  }
-
-  &.show {
-    opacity: $modal-backdrop-opacity;
-  }
+  &.fade { opacity: 0; }
+  &.show { opacity: $modal-backdrop-opacity; }
 }
 
 // Modal header
@@ -188,7 +182,7 @@
   // This solution is far from ideal because of the universal selector usage,
   // but is needed to fix https://github.com/twbs/bootstrap/issues/24800
   // stylelint-disable-next-line selector-max-universal
-  >* {
+  > * {
     margin: $modal-footer-margin-between / 2;
   }
 }
@@ -204,7 +198,6 @@
 
 // Scale up the modal
 @include media-breakpoint-up(sm) {
-
   // Automatically set modal's width for larger viewports
   .modal-dialog {
     max-width: $modal-md;
@@ -231,13 +224,10 @@
     @include box-shadow($modal-content-box-shadow-sm-up);
   }
 
-  .modal-sm {
-    max-width: $modal-sm;
-  }
+  .modal-sm { max-width: $modal-sm; }
 }
 
 @include media-breakpoint-up(lg) {
-
   .modal-lg,
   .modal-xl {
     max-width: $modal-lg;
@@ -245,7 +235,5 @@
 }
 
 @include media-breakpoint-up(xl) {
-  .modal-xl {
-    max-width: $modal-xl;
-  }
+  .modal-xl { max-width: $modal-xl; }
 }

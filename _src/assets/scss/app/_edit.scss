@@ -52,11 +52,9 @@
     opacity: 0;
     padding-top: 5vh;
   }
-
   99% {
     overflow-y: hidden;
   }
-
   100% {
     overflow-y: auto;
     opacity: 1;
@@ -73,13 +71,11 @@
     opacity: 1;
     padding-top: 0;
   }
-
   99% {
     visibility: visible;
     min-height: 100vh;
     max-height: 100vh;
   }
-
   100% {
     overflow-y: hidden;
     visibility: hidden;

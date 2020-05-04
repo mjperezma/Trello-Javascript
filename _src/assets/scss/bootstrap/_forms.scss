@@ -158,7 +158,6 @@ select.form-control {
 
 // stylelint-disable-next-line no-duplicate-selectors
 select.form-control {
-
   &[size],
   &[multiple] {
     height: auto;
@@ -194,8 +193,8 @@ textarea.form-control {
   margin-right: -$form-grid-gutter-width / 2;
   margin-left: -$form-grid-gutter-width / 2;
 
-  >.col,
-  >[class*="col-"] {
+  > .col,
+  > [class*="col-"] {
     padding-right: $form-grid-gutter-width / 2;
     padding-left: $form-grid-gutter-width / 2;
   }
@@ -218,8 +217,8 @@ textarea.form-control {
   margin-left: -$form-check-input-gutter;
 
   // Use [disabled] and :disabled for workaround https://github.com/twbs/bootstrap/issues/28247
-  &[disabled]~.form-check-label,
-  &:disabled~.form-check-label {
+  &[disabled] ~ .form-check-label,
+  &:disabled ~ .form-check-label {
     color: $text-muted;
   }
 }
@@ -251,8 +250,7 @@ textarea.form-control {
 // pseudo-classes but also includes `.is-invalid` and `.is-valid` classes for
 // server side validation.
 
-@each $state,
-$data in $form-validation-states {
+@each $state, $data in $form-validation-states {
   @include form-validation-state($state, map-get($data, color), map-get($data, icon));
 }
 
@@ -321,7 +319,6 @@ $data in $form-validation-states {
       width: auto;
       padding-left: 0;
     }
-
     .form-check-input {
       position: relative;
       flex-shrink: 0;
@@ -334,7 +331,6 @@ $data in $form-validation-states {
       align-items: center;
       justify-content: center;
     }
-
     .custom-control-label {
       margin-bottom: 0;
     }

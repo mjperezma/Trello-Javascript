@@ -79,7 +79,7 @@
   }
 
   .nav-link.active,
-  .show>.nav-link {
+  .show > .nav-link {
     color: $nav-pills-link-active-color;
     background-color: $nav-pills-link-active-bg;
   }
@@ -111,11 +111,10 @@
 // Hide tabbable panes to start, show them when `.active`
 
 .tab-content {
-  >.tab-pane {
+  > .tab-pane {
     display: none;
   }
-
-  >.active {
+  > .active {
     display: block;
   }
 }

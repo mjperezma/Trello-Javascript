@@ -1,11 +1,11 @@
- //
- // Screenreaders
- //
+//
+// Screenreaders
+//
 
- .sr-only {
-   @include sr-only();
- }
+.sr-only {
+  @include sr-only();
+}
 
- .sr-only-focusable {
-   @include sr-only-focusable();
- }
+.sr-only-focusable {
+  @include sr-only-focusable();
+}

@@ -32,21 +32,16 @@
       margin-left: $caret-spacing;
       vertical-align: $caret-vertical-align;
       content: "";
-
-      @if $direction==down {
+      @if $direction == down {
         @include caret-down();
-      }
-
-      @else if $direction==up {
+      } @else if $direction == up {
         @include caret-up();
-      }
-
-      @else if $direction==right {
+      } @else if $direction == right {
         @include caret-right();
       }
     }
 
-    @if $direction==left {
+    @if $direction == left {
       &::after {
         display: none;
       }
