@@ -1,138 +1,116 @@
 'use strict';
 
-import './edit.js';
-import './menu.js';
-import './searchInput.js';
+import api from './services/api.js';
+import ls from './services/local-storage.js';
+import state from './services/state.js';
+import board from './dom/board.js';
+import edit from './dom/edit.js';
 
-let card = [];
-const getApiData = () => {
-  fetch('./api/board.json')
-    .then((response) => response.json())
-    .then((data) => {
-      console.log(data);
-      card = data.board.list;
+let data = {};
+let cardId = '';
+let filterText = '';
+
+// start
+
+const startApp = () => {
+  if (ls.isValid()) {
+    data = ls.get();
+    render();
+  } else {
+    api.getApiData().then((apiData) => {
+      data = apiData;
+      ls.set(data);
+      render();
     });
-  createNewList();
+  }
 };
 
-const main = document.querySelector('.js-main');
+const handleBoardEvent = (ev) => {
+  const dataset = ev.currentTarget.dataset;
+  if (dataset.action === 'add-list') {
+    state.addList(data);
+  } else if (dataset.action === 'delete-list') {
+    state.deleteList(data, dataset.listId);
+  } else if (dataset.action === 'move-list-left') {
+    state.moveListToLeft(data, dataset.listId);
+  } else if (dataset.action === 'move-list-right') {
+    state.moveListToRight(data, dataset.listId);
+  } else if (dataset.action === 'set-list-title') {
+    state.setListTitle(data, dataset.listId, ev.currentTarget.value);
+  } else if (dataset.action === 'add-card') {
+    state.addCard(data, dataset.listId);
+  } else if (dataset.action === 'move-card-up') {
+    state.moveCardUp(data, dataset.cardId);
+  } else if (dataset.action === 'move-card-down') {
+    state.moveCardDown(data, dataset.cardId);
+  }
+  ls.set(data);
+  render();
+};
+const openCard = (ev) => {
+  cardId = ev.currentTarget.dataset.cardId;
+  const card = state.getCard(data, cardId);
+  const list = state.getListOfCard(data, cardId);
+  edit.open(card, list);
+};
+const handleDeleteCard = () => {
+  state.deleteCard(data, cardId);
+  edit.close();
+  ls.set(data);
+  render();
+};
+const handleCardTitle = (ev) => {
+  state.setCardTitle(data, cardId, ev.currentTarget.value);
+  ls.set(data);
+  render();
+};
 
-function createNewList() {
-  let div = document.createElement('div');
-  let form = document.createElement('form');
-  let input = document.createElement('input');
-  let button = document.createElement('div');
-  let span = document.createElement('span');
-  let button1 = document.createElement('div');
-  let buttonErase = document.createElement('button');
-  let spanErase = document.createElement('span');
-  let buttonLeft = document.createElement('button');
-  let spanLeft = document.createElement('span');
-  let buttonRight = document.createElement('button');
-  let spanRight = document.createElement('span');
-  let buttonAddTask = document.createElement('button');
-  let spanAddTask = document.createElement('span');
-  let textSpanTask = document.createTextNode(' Añadir otra tarjeta');
-  let box = document.createElement('div');
-  let divCard = document.createElement('div');
+const handleCardDescription = (ev) => {
+  state.setCardDescription(data, cardId, ev.currentTarget.value);
+  ls.set(data);
+};
 
-  box.setAttribute('class', 'app-list');
-  div.setAttribute('class', 'p-1 rounded-sm bg-primary shadow');
-  form.setAttribute('class', 'app-list-form align-middle p-1 position-relative ');
-  input.setAttribute('class', 'app-list-input form-control form-control-sm');
-  input.setAttribute('placeholder', 'Tareas importantes');
-  input.setAttribute('value', 'Doing');
-  input.setAttribute('type', 'text');
-  input.setAttribute('title', 'Editar titulo de la lista');
-  button.setAttribute('class', 'app-list-options');
-  span.setAttribute('class', 'pl-2 pr-2 text-white-50 fas fa-ellipsis-v');
-  button1.setAttribute('class', 'app-list-btns btn-group btn-group-sm');
-  buttonErase.setAttribute('class', 'btn btn-light text-muted border shadow-sm');
-  buttonErase.setAttribute('type', 'button');
-  buttonErase.setAttribute('title', 'Borrar esta tarjeta');
-  spanErase.setAttribute('class', 'fas fa-trash-alt');
-  buttonLeft.setAttribute('class', 'btn btn-light text-muted border shadow-sm app-list-move-left');
-  buttonLeft.setAttribute('type', 'button');
-  buttonLeft.setAttribute('title', 'Mover esta lista hacia la derecha');
-  spanLeft.setAttribute('class', 'fas fa-arrow-left');
-  buttonRight.setAttribute('class', 'btn btn-light text-muted border shadow-sm app-list-move-right');
-  buttonRight.setAttribute('type', 'button');
-  buttonRight.setAttribute('title', 'Mover esta lista hacia la izquierda');
-  spanRight.setAttribute('class', 'fas fa-arrow-right');
-  buttonAddTask.setAttribute('type', 'button');
-  buttonAddTask.setAttribute('class', 'ml-1 btn btn-primary btn-sm text-white-50 js-add');
-  buttonAddTask.setAttribute('title', ' Añadir otra tarjeta');
-  spanAddTask.setAttribute('class', 'fas fa-plus');
-  divCard.setAttribute('class', 'js-card');
+const handleFilter = (ev) => {
+  filterText = ev.currentTarget.value;
+  render();
+};
+const render = () => {
+  // board
+  const filteredList = state.filter(data.board.list, filterText);
+  board.render(filteredList);
+  listenBoardEvents();
+  // menu
+  const groupedCardByTags = state.groupCardByTags(data.board.list);
+  menu.render(groupedCardByTags);
+};
 
-  main.appendChild(box);
-  box.appendChild(div);
-  div.appendChild(form);
-  form.appendChild(input);
-  form.appendChild(button);
-  button.appendChild(span);
-  button.appendChild(button1);
-  button1.appendChild(buttonErase);
-  buttonErase.appendChild(spanErase);
-  button1.appendChild(buttonLeft);
-  buttonLeft.appendChild(spanLeft);
-  button1.appendChild(buttonRight);
-  buttonRight.appendChild(spanRight);
-  div.appendChild(divCard);
-  div.appendChild(buttonAddTask);
-  div.appendChild(spanAddTask);
+// events
 
-  createNewCard();
-  buttonAddTask.appendChild(spanAddTask);
-  buttonAddTask.appendChild(textSpanTask);
-}
+const listenBoardEvents = () => {
+  listenEvents('.js-change', 'change', handleBoardEvent);
+  listenEvents('.js-click', 'click', handleBoardEvent);
+  listenEvents('.js-open-card', 'click', openCard);
+  listenEvents('.js-submit', 'submit', preventSubmitForm);
+};
 
-function createNewCard() {
-  const card = document.querySelector('.js-card');
-  let articleCard = document.createElement('article');
-  let divOneArticle = document.createElement('div');
-  let spanFirst = document.createElement('span');
-  let spanSecond = document.createElement('span');
-  let spanThird = document.createElement('span');
-  let divTitle = document.createElement('div');
-  let titleDiv = document.createElement('h3');
-  let textTitleTask = document.createTextNode(' Publicar en Github Pages');
-  let titleJs = document.createTextNode('JS');
-  let titleCss = document.createTextNode('Css');
-  let titleHtml = document.createTextNode('Html');
-  let divTaskDone = document.createElement('div');
-  let smallFist = document.createElement('small');
-  let smallSecond = document.createElement('small');
-  let smallThird = document.createElement('small');
-  let textTaskDone = document.createTextNode(' 3/5');
+const listenInitialEvents = () => {
+  listenEvents('.js-edit-title', 'keyup', handleCardTitle);
+  listenEvents('.js-edit-description', 'blur', handleCardDescription);
+  listenEvents('.js-edit-delete', 'click', handleDeleteCard);
+  listenEvents('.js-filter', 'keyup', handleFilter);
+};
 
-  articleCard.setAttribute('class', 'js-card app-card m-1 mb-2 p-2 bg-white rounded-sm app-cursor-pointer shadow-sm');
-  articleCard.setAttribute('title', 'Abrir la tarjeta');
-  spanFirst.setAttribute('class', 'badge badge-secondary bg-success');
-  spanSecond.setAttribute('class', 'badge badge-secondary bg-success');
-  spanThird.setAttribute('class', 'badge badge-secondary bg-success');
-  titleDiv.setAttribute('class', 'h6');
-  divTaskDone.setAttribute('class', 'text-black-50');
-  smallFist.setAttribute('class', 'pr-2 fas fa-align-left');
-  smallSecond.setAttribute('class', 'far fa-check-square');
-  smallThird.setAttribute('title', 'Subtareas completadas: 3 de 5');
+const listenEvents = (selector, evenType, evenHandler) => {
+  const elements = document.querySelectorAll(selector);
+  elements.forEach((element) => {
+    element.addEventListener(evenType, evenHandler);
+  });
+};
 
-  card.appendChild(articleCard);
-  articleCard.appendChild(divOneArticle);
-  divOneArticle.appendChild(spanFirst);
-  divOneArticle.appendChild(spanSecond);
-  divOneArticle.appendChild(spanThird);
-  divTitle.appendChild(titleDiv);
-  articleCard.appendChild(divTitle);
-  titleDiv.appendChild(textTitleTask);
-  spanFirst.appendChild(titleJs);
-  spanSecond.appendChild(titleCss);
-  spanThird.appendChild(titleHtml);
-  articleCard.appendChild(divTaskDone);
-  divTaskDone.appendChild(smallFist);
-  divTaskDone.appendChild(smallSecond);
-  divTaskDone.appendChild(smallThird);
-  smallThird.appendChild(textTaskDone);
-}
+const preventSubmitForm = (ev) => {
+  ev.preventDefault();
+};
+// start
 
-getApiData();
+listenInitialEvents();
+startApp();
